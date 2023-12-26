@@ -5,6 +5,7 @@ import { uploadFile } from "./services/api";
 
 function App() {
   const [file, setFile] = useState("");
+  const [result, setResult] = useState("");
   const fileInputRef = useRef();
 
   const handleUpload = () => {
@@ -12,15 +13,18 @@ function App() {
   };
 
   useEffect(() => {
-    const getImage = async () => {
-      const data = new FormData();
-      data.append = ("name", file.name);
-      data.append = ("file", file);
+   const getImage = async () => {
+     if (file) {
+       const data = new FormData();
+       data.append("name", file.name);
+       data.append("file", file);
 
-      let response = await uploadFile(data);
-    };
-    getImage();
-  }, [file]);
+       const response = await uploadFile(data);
+       setResult(response.path);
+     }
+   }
+   getImage();
+ }, [file])
 
   return (
     <div className="App">
@@ -46,6 +50,7 @@ function App() {
               onChange={(e) => setFile(e.target.files[0])}
             />
           </div>
+          <a href={result}>{result}</a>
         </div>
       </main>
     </div>

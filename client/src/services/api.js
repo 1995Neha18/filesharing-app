@@ -1,11 +1,12 @@
-import axios from "axios";
+import axios from 'axios';
+
+const API_URI = 'http://localhost:8800';
 
 export const uploadFile = async (data) => {
-  const API_URL = "http://localhost:8800/";
-  try {
-    const response = await axios.post(`${API_URL}/upload`, data);
-    return response.data;
-  } catch (error) {
-    console.log("Error while uploading file", error.message);
-  }
-};
+    try {
+        const response = await axios.post(`${API_URI}/upload`, data);
+        return response.data;
+    } catch (error) {
+        console.log('Error while calling the API ', error.message);
+    }
+}
