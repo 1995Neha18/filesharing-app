@@ -2,6 +2,7 @@
 import "./App.css";
 import { useEffect, useRef, useState } from "react";
 import { uploadFile } from "./services/api";
+import scenery1 from "./images/scenery1.jpeg";
 
 function App() {
   const [file, setFile] = useState("");
@@ -13,23 +14,35 @@ function App() {
   };
 
   useEffect(() => {
-   const getImage = async () => {
-     if (file) {
-       const data = new FormData();
-       data.append("name", file.name);
-       data.append("file", file);
+    const getImage = async () => {
+      if (file) {
+        const data = new FormData();
+        data.append("name", file.name);
+        data.append("file", file);
 
-       const response = await uploadFile(data);
-       setResult(response.path);
-     }
-   }
-   getImage();
- }, [file])
+        try {
+          const response = await uploadFile(data);
+
+          if (response && response.path) {
+            setResult(response.path);
+          } else {
+            console.error("Invalid response format:", response);
+          }
+        } catch (error) {
+          console.error("Error uploading file:", error.message);
+        }
+      }
+    };
+
+    getImage();
+  }, [file]);
 
   return (
     <div className="App">
-      <main className="relative h-screen flex flex-col justify-center items-center ">
-        <div className=" w-full h-full blur-3xl bg-gradient-to-b  from-[#5F9EA0] via-[#B3D9D9] to-[#CFECEC]"></div>
+      <main className="relative w-full h-screen flex flex-col justify-center items-center ">
+        <div className=" w-full h-full blur-sm">
+          <img src={scenery1} alt="icon" className="w-full h-full" />
+        </div>
         <div className="absolute  w-[50%] h-[80%] bg-white rounded-xl space-y-6 bg-[#fff]">
           <h1 className="text-3xl text-primary font-bold mt-20">
             Simple File Sharing!
@@ -47,14 +60,29 @@ function App() {
             <input
               type="file"
               ref={fileInputRef}
-              onChange={(e) => setFile(e.target.files[0])}
+              onChange={(e) => {
+                const selectedFile = e.target.files[0];
+                if (selectedFile) {
+                  setFile(selectedFile);
+                }
+              }}
             />
           </div>
-          <a href={result}>{result}</a>
+          <div className="mt-4 text-secondary">
+            <a href={result}>{result}</a>
+          </div>
         </div>
       </main>
     </div>
   );
 }
+
+// originalname: 'download.jpeg',
+// encoding: '7bit',
+// mimetype: 'image/jpeg',
+// destination: 'uploads',
+// filename: '6cc6dbb18e4ef63c5356ef0990a7f37b',
+// path: 'uploads\\6cc6dbb18e4ef63c5356ef0990a7f37b',
+// size: 8810
 
 export default App;
